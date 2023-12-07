@@ -1,0 +1,50 @@
+Предметная область: Видеохостинг Youtube 
+(включает в себя 3 бд: подкасты Джо Рогана, популярнейшие каналы и каналы по Data Science) 
+
+В этом файле SQL для создания таблиц
+В файле connection.py скрипт для инициализации БД
+В файле fifth.py скрипт для загрузки данных из файлов в БД + скрипты запросов к БД 
+ 
+ Первая таблица:
+"""
+CREATE TABLE podcast (
+    id         INTEGER    PRIMARY KEY AUTOINCREMENT,
+    guest      TEXT (256),
+    comments   INTEGER,
+    sec_length INTEGER,
+    likes      INTEGER,
+    dislikes   INTEGER,
+    hd_quality TEXT (256) 
+);
+"""
+
+ Вторая таблица:
+"""
+CREATE TABLE youtube_top (
+    id            INTEGER    PRIMARY KEY AUTOINCREMENT,
+    youtuber_name TEXT (256),
+    channel_name  TEXT (256),
+    category      TEXT (256),
+    subscribers   INTEGER,
+    avg_likes     INTEGER
+);
+"""
+
+ Третья таблица:
+"""
+CREATE TABLE ds_channels (
+    id                INTEGER    PRIMARY KEY AUTOINCREMENT,
+    channel_name      TEXT (256),
+    subscribers       INTEGER,
+    below_1k          INTEGER,
+    between_1k_5k     INTEGER,
+    between_5k_10k    INTEGER,
+    between_10k_25k   INTEGER,
+    between_25k_50k   INTEGER,
+    between_50k_100k  INTEGER,
+    between_100k_150k INTEGER,
+    between_150k_200k INTEGER,
+    between_200k_1m   INTEGER,
+    above_1m          INTEGER
+);
+"""

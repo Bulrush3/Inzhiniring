@@ -1,10 +1,6 @@
 from bs4 import BeautifulSoup
 import json
-counter = 0
-matrix_counter = 0
-sum_bonus = 0
-max_bonus = 0
-min_bonus = 999999999
+import help
 
 def handle_file(file_name):
     with open(file_name, encoding='utf-8') as file:
@@ -26,16 +22,6 @@ def handle_file(file_name):
             for prop in props:
                 item[prop['type']] = prop.get_text().strip()
 
-            global counter
-            counter += 1
-            global sum_bonus
-            sum_bonus += item['bonus']
-            global max_bonus
-            global min_bonus
-            max_bonus = max(item['bonus'], max_bonus)
-            min_bonus = min(item['bonus'], min_bonus)
-            
-            # print(item)
             items.append(item)
     return items
 
@@ -44,19 +30,19 @@ for i in  range(1,76):
     items = handle_file(f'files/zip_var_60_2/{i}.html')
     # print(items)
 
-average_bonus = round(sum_bonus / counter, 2)
+# Расчет статистики
+bonus_values = list(map(lambda x: x['bonus'], items))
+# print(bonus_values)
+bonus_stat = help.count_stats(bonus_values)
+with open("files/results/2/bonus_stat.json", "w", encoding="utf-8") as f:
+    f.write(json.dumps(bonus_stat, ensure_ascii=False))
 
-print("ViewsStatistics:", 
-      "MAX - " + str(max_bonus), 
-      "MIN - " + str(min_bonus), 
-      "SUM - " + str(sum_bonus), 
-      "AVG - " + str(average_bonus), sep = "\n")
-
+# Сортировка
 items = sorted(items, key=lambda x: x['price'], reverse=True)
-
-with open("files/results/2/second.json", "w", encoding="utf-8") as f:
+with open("files/results/2/second_sorted.json", "w", encoding="utf-8") as f:
     f.write(json.dumps(items, ensure_ascii=False))
 
+# Фильтрация
 filtered_items = []
 for item in items:
     if item["price"] > 100000:
@@ -65,13 +51,14 @@ for item in items:
 with open("files/results/2/second_filtered.json", "w", encoding="utf-8") as f:
     f.write(json.dumps(filtered_items, ensure_ascii=False))
 
+matrix_values = []
 for item in items:
     try:
-        if item['matrix']:
-            matrix_counter += 1
+        matrix_values.append(item['matrix'])
     except KeyError:
-        continue
+        matrix_values.append(None)
 
+matrix_freq = help.freq_values(matrix_values, 'matrix')
 
-print(f"Телефоны, где упоминается матрица: {matrix_counter}", f"Телефоны, где не упоминается матрица: {counter - matrix_counter}", sep = "\n")
-print("Нефильтрованные:", len(items)," \nФильтрованные:", len(filtered_items), sep = " ")
+with open("files/results/2/matrix_freq.json", "w", encoding="utf-8") as f:
+    f.write(json.dumps(matrix_freq, ensure_ascii=False))
