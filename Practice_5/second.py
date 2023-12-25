@@ -98,19 +98,11 @@ def get_age_stat_by_column(collection, column_name):
 def max_salary_by_min_age(collection):
     q = [
         {
-            "$group": {
-                "_id": "$age",
-                "max_salary": {"$max": "$salary"}
-                # "$match":{"age": 18}
-            }
-        },
-            {
-                "$group": {
-                    "_id": "result", 
-                    "min_age": {"$min": "$_id"}, #также _id можно заменить на age
-                    "max_salary": {"$max": "$max_salary"}
-                    }},
-
+            '$sort':{
+                'age': 1,
+                'salary': -1
+            },
+        }
     ]
 
     results = []
@@ -123,18 +115,11 @@ def max_salary_by_min_age(collection):
 def min_salary_by_max_age(collection):
     q = [
         {
-            "$group": {
-                "_id": "$age",
-                "min_salary": {"$min": "$salary"}
+            '$sort':{
+                'age': -1,
+                'salary': 1
             }
-        },
-            {
-                "$group": {
-                    "_id": "result", 
-                    "max_age": {"$max": "$_id"},
-                    "min_salary": {"$min": "$min_salary"}
-                    }},
-
+        }
     ]
 
     results = []
